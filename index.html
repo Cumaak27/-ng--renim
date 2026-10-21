@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tuana'nın Öğrenim & Yazılım Hub'ı</title>
+    <title>İNGİLİZCE Öğrenim & Yazılım Hub'ı</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -590,7 +590,7 @@
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages">
                     <div class="chat-bubble ai">
-                        Merhaba Tuana! Ben senin yapay zeka öğrenim asistanınım. Yazılım terimleri, İngilizce dil bilgisi veya kodlama konseptleri hakkında bana her şeyi sorabilirsin! 🚀
+                        Merhaba RAFIKK! Ben senin yapay zeka öğrenim asistanınım. Yazılım terimleri, İngilizce dil bilgisi veya kodlama konseptleri hakkında bana her şeyi sorabilirsin! 🚀
                     </div>
                 </div>
                 <div class="chat-input-area">
@@ -841,8 +841,8 @@
         ];
 
         // --- AKIŞLI ÖDEV SİSTEMİ MANTIĞI ---
-        let selectedDay = parseInt(localStorage.getItem('tuana_current_day')) || 1;
-        let completedDays = JSON.parse(localStorage.getItem('tuana_completed_days')) || [];
+        let selectedDay = parseInt(localStorage.getItem('RAFIK_current_day')) || 1;
+        let completedDays = JSON.parse(localStorage.getItem('RAFIKK_completed_days')) || [];
         
         let isHomeworkMode = false;
         let homeworkStep = 1;
@@ -875,7 +875,7 @@
 
         function selectDay(dayNum) {
             selectedDay = dayNum;
-            localStorage.setItem('tuana_current_day', dayNum);
+            localStorage.setItem('RAFIKK_current_day', dayNum);
             renderHomeworkGrid();
         }
 
@@ -1002,7 +1002,7 @@
 
             if (!completedDays.includes(selectedDay)) {
                 completedDays.push(selectedDay);
-                localStorage.setItem('tuana_completed_days', JSON.stringify(completedDays));
+                localStorage.setItem('RAFIK_completed_days', JSON.stringify(completedDays));
             }
 
             alert(`🎉 Tebrikler! ${selectedDay}. Günün tüm kelime ve cümle aşamalarını başarıyla tamamladın!`);
