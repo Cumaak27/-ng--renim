@@ -45,7 +45,7 @@ export default async function handler(req, res) {
                             parts: [{
                                 text: typeof systemInstruction === "string"
                                     ? systemInstruction
-                                    : "Sen Tuana'nın İngilizce ve yazılım öğrenim asistanısın. Türkçe, kısa, motive edici ve açıklayıcı yanıtlar ver."
+                                    : "Sen Rafık'ın İngilizce ve yazılım öğrenim asistanısın. Türkçe, kısa, motive edici ve açıklayıcı yanıtlar ver."
                             }]
                         },
                         generationConfig: {
