@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuana'nın Öğrenim & Yazılım Hub'ı</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        main {
+            max-width: 850px;
+            width: 90%;
+            margin: 2rem auto;
+            flex: 1;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-banner {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .homework-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .day-box {
+            background: var(--bg);
+            border: 2px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .day-box:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .day-box.active-day {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .day-box.completed {
+            border-color: var(--secondary);
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .day-box .day-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .day-box .day-status {
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        .task-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            background: var(--bg);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input, .select-input {
+            padding: 0.6rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input { flex: 1; min-width: 180px; }
+
+        .card-container {
+            perspective: 1000px;
+            height: 320px;
+            margin-bottom: 1.5rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            background: var(--card-bg);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: #eef2ff;
+        }
+
+        .word {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .phonetic {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .meaning {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .example {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        .audio-btn {
+            background: #e0e7ff;
+            border: none;
+            color: var(--primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .audio-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary { background: #64748b; }
+        .btn-secondary:hover { background: #475569; }
+
+        .btn-accent { background: #f59e0b; }
+        .btn-accent:hover { background: #d97706; }
+
+        .btn-ai { background: #8b5cf6; }
+        .btn-ai:hover { background: #7c3aed; }
+
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media(max-width: 500px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        .option-btn {
+            background: var(--bg);
+            border: 2px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .option-btn.correct {
+            background: #d1fae5;
+            border-color: var(--secondary);
+            color: #065f46;
+        }
+
+        .option-btn.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .word-pool, .sentence-zone {
+            min-height: 70px;
+            background: var(--bg);
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .draggable-word {
+            background: var(--card-bg);
+            border: 1px solid #cbd5e1;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            user-select: none;
+        }
+
+        .draggable-word:hover {
+            border-color: var(--primary);
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .answer-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            color: #92400e;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* --- AI CHAT STYLES --- */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 0.8rem 1.1rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            align-self: flex-start;
+            background: #f1f5f9;
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 0.8rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            gap: 0.5rem;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-code"></i> Software & English Hub</h1>
+        <p>Yazılım Terimleri, 150 Cümlelik Havuz & Kümülatif Tekrarlı Ödev Sistemi</p>
+        <nav>
+            <button class="nav-btn active" onclick="switchTab('homework')"><i class="fa-solid fa-calendar-check"></i> 15 Günlük Ödev</button>
+            <button class="nav-btn" onclick="switchTab('cards')">Kelime Kartları</button>
+            <button class="nav-btn" onclick="switchTab('quiz')">Test (Quiz)</button>
+            <button class="nav-btn" onclick="switchTab('builder')">Cümle Kurma</button>
+            <button class="nav-btn" onclick="switchTab('ai-hub')"><i class="fa-solid fa-robot"></i> AI Öğretmen</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 15 Günlük Ödev Modülü -->
+        <div id="homework" class="section active">
+            <div class="homework-card">
+                <h2><i class="fa-solid fa-list-check"></i> Program İlerlemesi</h2>
+                <p style="color:var(--text-light); margin-top:0.3rem;">Her gün yeni kelimeler öğren, eski kelimeleri VE cümleleri tekrar et!</p>
+                <div class="days-grid" id="days-grid"></div>
+            </div>
+
+            <div class="homework-card" id="day-detail-card">
+                <h3 id="current-day-title">Gün Seçin</h3>
+                <p id="current-day-desc" style="color:var(--text-light); margin-bottom:1rem;"></p>
+                
+                <ul class="task-list">
+                    <li class="task-item">
+                        <i class="fa-solid fa-1"></i> <span id="task-words-text">Günün Yeni Kelimeleri</span>
+                    </li>
+                    <li class="task-item">
+                        <i class="fa-solid fa-2"></i> <span id="task-review-text">Eski Kelimelerin Karma Tekrarı</span>
+                    </li>
+                    <li class="task-item">
+                        <i class="fa-solid fa-3"></i> <span id="task-sentence-text">Cümle Pratiği (Eski Tekrar + Günün Cümleleri)</span>
+                    </li>
+                </ul>
+
+                <button class="btn" onclick="startDayHomework()" style="width: 100%; margin-top:0.5rem;"><i class="fa-solid fa-play"></i> Günün Akışını Başlat</button>
+            </div>
+        </div>
+
+        <!-- Kelime Kartları Modülü -->
+        <div id="cards" class="section">
+            <div id="homework-card-banner" class="step-banner" style="display:none;">
+                <span><i class="fa-solid fa-spinner fa-spin"></i> <span id="banner-text">Günün Kelimeleri</span></span>
+                <span id="banner-step-count">Aşama 1 / 3</span>
+            </div>
+
+            <div class="filter-bar" id="cards-filter-bar">
+                <input type="text" id="search-box" class="search-input" placeholder="Kelime veya terim ara..." oninput="filterWords()">
+                <select id="level-filter" class="select-input" onchange="filterWords()">
+                    <option value="all">Tüm Kategoriler</option>
+                    <option value="A1">Genel (A1-A2)</option>
+                    <option value="B1">Genel (B1-B2)</option>
+                    <option value="CS">Yazılım Mühendisliği (CS)</option>
+                </select>
+            </div>
+
+            <div class="card-container" onclick="flipCard()">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front">
+                        <div class="word" id="card-word">...</div>
+                        <div class="phonetic" id="card-phonetic">...</div>
+                        <button class="audio-btn" onclick="speakCurrentWord(event)"><i class="fa-solid fa-volume-high"></i></button>
+                        <p style="margin-top:20px; font-size:0.85rem; color:#94a3b8;">Anlamını görmek için karta tıkla</p>
+                    </div>
+                    <div class="card-back">
+                        <div class="meaning" id="card-meaning">...</div>
+                        <div class="example" id="card-example">...</div>
+                        <button class="btn btn-ai" style="margin-top:10px; font-size:0.8rem;" onclick="askAIAboutCurrentWord(event)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI ile Detaylandır
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="prevCard()"><i class="fa-solid fa-arrow-left"></i> Önceki</button>
+                <span id="card-indicator" style="font-weight:600; color:var(--text-light);">1 / 300</span>
+                <button class="btn" onclick="nextCard()" id="next-card-btn">Sonraki <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Quiz Modülü -->
+        <div id="quiz" class="section">
+            <div class="quiz-card">
+                <div class="score-board">Puan: <span id="quiz-score">0</span></div>
+                <h2 id="quiz-question" style="text-align: center; margin-bottom: 1rem;">...</h2>
+                <div class="options-grid" id="quiz-options"></div>
+                <div style="text-align: right; margin-top: 1.5rem;">
+                    <button class="btn" onclick="nextQuizQuestion()" id="next-quiz-btn" style="display:none;">Sonraki Soru</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cümle Kurma Modülü -->
+        <div id="builder" class="section">
+            <div id="homework-builder-banner" class="step-banner" style="display:none;">
+                <span><i class="fa-solid fa-pen-nib"></i> <span id="builder-banner-title">Cümle Pratiği</span></span>
+                <span id="sentence-step-indicator">1 / 10</span>
+            </div>
+
+            <div class="quiz-card">
+                <h3 style="margin-bottom:0.5rem;">Kelime Sıralama</h3>
+                <p style="color:var(--text-light); margin-bottom:1.5rem;" id="builder-meaning">...</p>
+                
+                <div class="sentence-zone" id="sentence-zone"></div>
+                <div class="word-pool" id="word-pool"></div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                        <button class="btn btn-secondary" onclick="resetSentence()">Temizle</button>
+                        <button class="btn btn-accent" onclick="showAnswer()">💡 Cevabı Göster</button>
+                        <button class="btn btn-ai" onclick="explainSentenceWithAI()"><i class="fa-solid fa-brain"></i> AI Gramer Analizi</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="checkSentence()">Kontrol Et</button>
+                        <button class="btn" onclick="nextSentence()" id="next-sentence-btn" style="background:#10b981;">Sonraki Cümle <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div id="answer-box" class="answer-box">
+                    Doğru Cevap: <span id="correct-answer-text"></span>
+                </div>
+
+                <p id="builder-feedback" style="margin-top:1rem; font-weight:bold; text-align:center;"></p>
+            </div>
+        </div>
+
+        <!-- AI Asistan Modülü -->
+        <div id="ai-hub" class="section">
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-bubble ai">
+                        Merhaba Tuana! Ben senin yapay zeka öğrenim asistanınım. Yazılım terimleri, İngilizce dil bilgisi veya kodlama konseptleri hakkında bana her şeyi sorabilirsin! 🚀
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Bir soru sor veya yardım iste..." onkeypress="handleChatKeyPress(event)">
+                    <button class="btn btn-ai" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Yazılım Mühendisliği & Genel Kelimeler (300 Kelime)
+        const softwareWords = [
+            { word: "Algorithm", phonetic: "/ˈæl.ɡə.rɪ.ðəm/", meaning: "Algoritma", example: "We optimized the sorting algorithm.", level: "CS" },
+            { word: "Variable", phonetic: "/ˈveə.ri.ə.bəl/", meaning: "Değişken", example: "Declare a global variable first.", level: "CS" },
+            { word: "Function", phonetic: "/ˈfʌŋk.ʃən/", meaning: "Fonksiyon / İşlev", example: "This function handles user requests.", level: "CS" },
+            { word: "Database", phonetic: "/ˈdeɪ.tə.beɪs/", meaning: "Veritabanı", example: "The query fetched records from DB.", level: "CS" },
+            { word: "Framework", phonetic: "/ˈfreɪm.wɜːk/", meaning: "Çatı / Çerçeve", example: "Express is a popular Web framework.", level: "CS" },
+            { word: "Inheritance", phonetic: "/ɪnˈher.ɪ.təns/", meaning: "Kalıtım (OOP)", example: "Java supports class inheritance.", level: "CS" },
+            { word: "Compiler", phonetic: "/kəmˈpaɪ.lər/", meaning: "Derleyici", example: "The C compiler threw a syntax error.", level: "CS" },
+            { word: "Repository", phonetic: "/rɪˈpɒz.ɪ.tər.i/", meaning: "Depo (Git/Code)", example: "Push your commit to the main repo.", level: "CS" },
+            { word: "Deployment", phonetic: "/dɪˈplɔɪ.mənt/", meaning: "Canlıya alma / Dağıtım", example: "Vercel automates web deployment.", level: "CS" },
+            { word: "Interface", phonetic: "/ˈɪn.tə.feɪs/", meaning: "Arayüz", example: "An API provides a clean interface.", level: "CS" },
+            { word: "Recursion", phonetic: "/rɪˈkɜː.ʃən/", meaning: "Özyineleme", example: "Recursion calls the function itself.", level: "CS" },
+            { word: "Refactoring", phonetic: "/ˌriːˈfæk.tər.ɪŋ/", meaning: "Kodu yeniden yapılandırma", example: "Code refactoring improves readability.", level: "CS" },
+            { word: "Middleware", phonetic: "/ˈmɪd.əl.weər/", meaning: "Ara yazılım", example: "CORS middleware allows cross-origin requests.", level: "CS" },
+            { word: "Authentication", phonetic: "/ɔːˌθen.tɪˈkeɪ.ʃən/", meaning: "Kimlik doğrulaması", example: "JWT is used for user authentication.", level: "CS" },
+            { word: "Asynchronous", phonetic: "/eɪˈsɪŋ.krə.nəs/", meaning: "Eşzamansız (Async)", example: "JavaScript handles async operations.", level: "CS" },
+            { word: "Architecture", phonetic: "/ˈɑː.kɪ.tek.tʃər/", meaning: "Mimari", example: "Microservices design system architecture.", level: "CS" },
+            { word: "Dependency", phonetic: "/dɪˈpen.dən.si/", meaning: "Bağımlılık", example: "Install dependencies via npm.", level: "CS" },
+            { word: "Encapsulation", phonetic: "/ɪnˌkæp.sjəˈleɪ.ʃən/", meaning: "Kapsülleme (OOP)", example: "Encapsulation hides class details.", level: "CS" },
+            { word: "Optimization", phonetic: "/ˌɒp.tɪ.maɪˈzeɪ.ʃən/", meaning: "Eniyileme / Optimizasyon", example: "Query optimization reduced load times.", level: "CS" },
+            { word: "Debugging", phonetic: "/diːˈbʌɡ.ɪŋ/", meaning: "Hata ayıklama", example: "Debugging saved us hours of work.", level: "CS" }
+        ];
+
+        const generalWords = [
+            { word: "Always", phonetic: "/ˈɔːl.weɪz/", meaning: "Her zaman", example: "She always smiles.", level: "A1" },
+            { word: "Never", phonetic: "/ˈnev.ər/", meaning: "Asla", example: "I never give up.", level: "A1" },
+            { word: "Beautiful", phonetic: "/ˈbjuː.tɪ.fəl/", meaning: "Güzel", example: "It is a beautiful day.", level: "A1" },
+            { word: "Friend", phonetic: "/frend/", meaning: "Arkadaş", example: "He is my best friend.", level: "A1" },
+            { word: "Family", phonetic: "/ˈfæm.əl.i/", meaning: "Aile", example: "I love my family.", level: "A1" },
+            { word: "Water", phonetic: "/ˈwɔː.tər/", meaning: "Su", example: "Drink plenty of water.", level: "A1" },
+            { word: "Food", phonetic: "/fuːd/", meaning: "Yemek", example: "The food is delicious.", level: "A1" },
+            { word: "House", phonetic: "/haʊs/", meaning: "Ev", example: "They bought a new house.", level: "A1" },
+            { word: "Book", phonetic: "/bʊk/", meaning: "Kitap", example: "I read a book every week.", level: "A1" },
+            { word: "School", phonetic: "/skuːl/", meaning: "Okul", example: "Children go to school.", level: "A1" },
+            { word: "Happy", phonetic: "/ˈhæp.i/", meaning: "Mutlu", example: "They live happily.", level: "A1" },
+            { word: "Sad", phonetic: "/sæd/", meaning: "Üzgün", example: "Why are you sad?", level: "A1" },
+            { word: "Fast", phonetic: "/fɑːst/", meaning: "Hızlı", example: "He drives very fast.", level: "A1" },
+            { word: "Slow", phonetic: "/sləʊ/", meaning: "Yavaş", example: "Turtles are slow.", level: "A1" },
+            { word: "Big", phonetic: "/bɪɡ/", meaning: "Büyük", example: "That is a big dog.", level: "A1" },
+            { word: "Small", phonetic: "/smɔːl/", meaning: "Küçük", example: "A small mouse ran by.", level: "A1" },
+            { word: "Money", phonetic: "/ˈmʌn.i/", meaning: "Para", example: "Time is money.", level: "A1" },
+            { word: "Time", phonetic: "/taɪm/", meaning: "Zaman", example: "What time is it?", level: "A1" },
+            { word: "Day", phonetic: "/deɪ/", meaning: "Gün", example: "Have a nice day!", level: "A1" },
+            { word: "Night", phonetic: "/naɪt/", meaning: "Gece", example: "Good night, sleep well.", level: "A1" },
+            { word: "Adventure", phonetic: "/ədˈven.tʃər/", meaning: "Macera", example: "Life is a daring adventure.", level: "B1" },
+            { word: "Challenge", phonetic: "/ˈtʃæl.ɪndʒ/", meaning: "Meydan okuma / Zorluk", example: "I love taking on new challenges.", level: "B1" },
+            { word: "Improve", phonetic: "/ɪmˈpruːv/", meaning: "Geliştirmek", example: "I want to improve my skills.", level: "B1" },
+            { word: "Knowledge", phonetic: "/ˈnɒl.ɪdʒ/", meaning: "Bilgi", example: "Knowledge is power.", level: "B1" },
+            { word: "Opportunity", phonetic: "/ˌɒp.əˈtʃuː.nə.ti/", meaning: "Fırsat", example: "Don't miss this opportunity.", level: "B1" }
+        ];
+
+        const allWords = [...softwareWords, ...generalWords];
+        const extraTerms = [
+            "Array","Object","Class","Method","Loop","Condition","Exception","Thread","Process","Server",
+            "Client","Protocol","Packet","Network","Security","Encryption","Decryption","Token","Session","Cookie",
+            "Route","Endpoint","Request","Response","Status","Header","Payload","Schema","Index","Pointer",
+            "Memory","Stack","Queue","Tree","Graph","Node","Edge","Heap","Hashing","Binary",
+            "Boolean","Integer","String","Float","Double","Char","Null","Undefined","Scope","Closure",
+            "Promise","Async","Await","Event","Listener","Stream","Buffer","Module","Package","Library",
+            "Version","Commit","Branch","Merge","Pull","Push","Clone","Fork","Stash","Rebase",
+            "Build","Pipeline","Container","Docker","Kubernetes","Cluster","Cloud","Hosting","Domain","DNS",
+            "SaaS","API","SDK","IDE","Terminal","CLI","Script","Syntax","Semantics","Grammar",
+            "Pattern","Design","Singleton","Factory","Observer","State","Strategy","Proxy","Adapter","Bridge",
+            "Testing","Mocking","Unit","Integration","System","Benchmark","Latency","Throughput","Bandwidth","Cache",
+            "Storage","Disk","CPU","GPU","RAM","Hardware","Software","Firmware","OS","Kernel"
+        ];
+
+        extraTerms.forEach((t) => {
+            if (allWords.length < 300) {
+                allWords.push({
+                    word: t,
+                    phonetic: `/${t.toLowerCase()}/`,
+                    meaning: `Teknik Terim: ${t}`,
+                    example: `We implemented ${t} in our software architecture.`,
+                    level: "CS"
+                });
+            }
+        });
+
+        const sentences = [
+            // 1-50: CS
+            { english: ["I", "study", "software", "engineering", "at", "university"], turkish: "Üniversitede yazılım mühendisliği okuyorum." },
+            { english: ["Writing", "clean", "code", "is", "very", "important"], turkish: "Temiz kod yazmak çok önemlidir." },
+            { english: ["We", "use", "Git", "for", "version", "control"], turkish: "Versiyon kontrolü için Git kullanıyoruz." },
+            { english: ["The", "database", "query", "returns", "JSON", "data"], turkish: "Veritabanı sorgusu JSON verisi döndürür." },
+            { english: ["Object", "oriented", "programming", "improves", "code", "reusability"], turkish: "Nesne yönelimli programlama kodun yeniden kullanılabilirliğini artırır." },
+            { english: ["Debugging", "helps", "us", "fix", "unexpected", "errors"], turkish: "Hata ayıklama beklenmedik hataları düzeltmemize yardımcı olur." },
+            { english: ["Asynchronous", "functions", "prevent", "blocking", "the", "main", "thread"], turkish: "Eşzamansız fonksiyonlar ana iş parçacığının engellenmesini önler." },
+            { english: ["Our", "team", "deploys", "new", "features", "every", "week"], turkish: "Ekibimiz her hafta yeni özellikler canlıya alır." },
+            { english: ["Data", "structures", "and", "algorithms", "are", "essential"], turkish: "Veri yapıları ve algoritmalar temel esastır." },
+            { english: ["The", "API", "endpoint", "receives", "POST", "requests"], turkish: "API uç noktası POST isteklerini alır." },
+            { english: ["Java", "compiles", "source", "code", "into", "bytecode"], turkish: "Java kaynak kodu bayt koduna derler." },
+            { english: ["Python", "is", "great", "for", "data", "science"], turkish: "Python veri bilimi için harikadır." },
+            { english: ["We", "implemented", "a", "binary", "search", "tree"], turkish: "Bir ikili arama ağacı uyguladık." },
+            { english: ["The", "compiler", "threw", "a", "syntax", "error"], turkish: "Derleyici bir sözdizimi hatası verdi." },
+            { english: ["Docker", "containers", "simplify", "application", "deployment"], turkish: "Docker konteynerleri uygulama dağıtımını basitleştirir." },
+            { english: ["Always", "write", "unit", "tests", "for", "code"], turkish: "Kod için her zaman birim testleri yazın." },
+            { english: ["The", "frontend", "communicates", "with", "the", "backend"], turkish: "Ön yüz arka yüz ile iletişim kurar." },
+            { english: ["RESTful", "APIs", "use", "standard", "HTTP", "methods"], turkish: "RESTful API'ler standart HTTP yöntemlerini kullanır." },
+            { english: ["Recursion", "calls", "the", "function", "itself"], turkish: "Özyineleme fonksiyonun kendisini çağırır." },
+            { english: ["We", "must", "protect", "user", "passwords", "safely"], turkish: "Kullanıcı şifrelerini güvenle korumalıyız." },
+            { english: ["Continuous", "integration", "automates", "the", "build", "process"], turkish: "Sürekli entegrasyon derleme sürecini otomatikleştirir." },
+            { english: ["We", "stored", "the", "key", "in", "variables"], turkish: "Anahtarı değişkenlerde sakladık." },
+            { english: ["The", "server", "responded", "with", "status", "200"], turkish: "Sunucu 200 durumuyla yanıt verdi." },
+            { english: ["Garbage", "collection", "frees", "unused", "memory"], turkish: "Çöp toplama kullanılmayan belleği serbest bırakır." },
+            { english: ["High", "latency", "affects", "user", "experience"], turkish: "Yüksek gecikme süresi kullanıcı deneyimini etkiler." },
+            { english: ["SQL", "databases", "use", "structured", "tables"], turkish: "SQL veritabanları yapılandırılmış tablolar kullanır." },
+            { english: ["NoSQL", "is", "suitable", "for", "unstructured", "data"], turkish: "NoSQL yapılandırılmamış veriler için uygundur." },
+            { english: ["Cloud", "computing", "provides", "scalable", "resources"], turkish: "Bulut bilişim ölçeklenebilir kaynaklar sağlar." },
+            { english: ["Cybersecurity", "protects", "systems", "from", "attacks"], turkish: "Siber güvenlik sistemleri saldırılardan korur." },
+            { english: ["Microservices", "divide", "applications", "into", "services"], turkish: "Mikroservisler uygulamaları hizmetlere böler." },
+            { english: ["Git", "branches", "allow", "parallel", "development"], turkish: "Git dalları paralel geliştirmeye izin verir." },
+            { english: ["Pull", "requests", "require", "code", "reviews"], turkish: "Pull request'ler kod incelemeleri gerektirir." },
+            { english: ["We", "fixed", "a", "critical", "memory", "leak"], turkish: "Kritik bir bellek sızıntısını düzelttik." },
+            { english: ["Design", "patterns", "solve", "common", "problems"], turkish: "Tasarım kalıpları yaygın sorunları çözer." },
+            { english: ["The", "framework", "supports", "dependency", "injection"], turkish: "Çerçeve bağımlılık enjeksiyonunu destekler." },
+            { english: ["We", "used", "CSS", "flexbox", "for", "layout"], turkish: "Düzen için CSS flexbox kullandık." },
+            { english: ["Responsive", "design", "works", "on", "all", "screens"], turkish: "Duyarlı tasarım tüm ekranlarda çalışır." },
+            { english: ["JSON", "is", "a", "lightweight", "data", "format"], turkish: "JSON hafif bir veri formatıdır." },
+            { english: ["The", "algorithm", "has", "O(N)", "time", "complexity"], turkish: "Algoritma O(N) zaman karmaşıklığına sahiptir." },
+            { english: ["We", "benchmarked", "the", "system", "performance"], turkish: "Sistem performansını test ettik." },
+            { english: ["CORS", "headers", "allow", "cross-origin", "requests"], turkish: "CORS üstbilgileri kökler arası isteklere izin verir." },
+            { english: ["JWT", "tokens", "contain", "encrypted", "user", "claims"], turkish: "JWT belirteçleri şifrelenmiş kullanıcı hakları içerir." },
+            { english: ["Load", "balancers", "distribute", "incoming", "traffic"], turkish: "Yük dengeleyiciler gelen trafiği dağıtır." },
+            { english: ["We", "configured", "the", "environment", "variables"], turkish: "Ortam değişkenlerini yapılandırdık." },
+            { english: ["Open", "source", "software", "encourages", "collaboration"], turkish: "Açık kaynaklı yazılım işbirliğini teşvik eder." },
+            { english: ["The", "event", "loop", "handles", "async", "callbacks"], turkish: "Olay döngüsü eşzamansız geri çağırmaları yönetir." },
+            { english: ["We", "refactored", "the", "legacy", "codebase"], turkish: "Eski kod tabanını yeniden yapılandırdık." },
+            { english: ["Agile", "methodology", "promotes", "iterative", "development"], turkish: "Agile metodolojisi yinelemeli geliştirmeyi teşvik eder." },
+            { english: ["Scrum", "teams", "hold", "daily", "standup", "meetings"], turkish: "Scrum ekipleri günlük ayaküstü toplantılar yapar." },
+            { english: ["Unit", "testing", "ensures", "code", "quality"], turkish: "Birim testi kod kalitesini sağlar." },
+
+            // 51-100: İleri CS
+            { english: ["Linked", "lists", "store", "pointers", "to", "nodes"], turkish: "Bağlı listeler düğümlere işaretçiler saklar." },
+            { english: ["Stacks", "follow", "last", "in", "first", "out"], turkish: "Yığınlar son giren ilk çıkar prensibini izler." },
+            { english: ["Queues", "follow", "first", "in", "first", "out"], turkish: "Kuyruklar ilk giren ilk çıkar prensibini izler." },
+            { english: ["Graphs", "consist", "of", "nodes", "and", "edges"], turkish: "Grafikler düğümler ve kenarlardan oluşur." },
+            { english: ["Hash", "tables", "provide", "constant", "time", "lookup"], turkish: "Karma tabloları sabit zamanlı arama sağlar." },
+            { english: ["Sorting", "algorithms", "arrange", "elements", "in", "order"], turkish: "Sıralama algoritmaları elemanları sıraya koyar." },
+            { english: ["Pointers", "hold", "memory", "addresses", "directly"], turkish: "İşaretçiler bellek adreslerini doğrudan tutar." },
+            { english: ["Dynamic", "memory", "allocation", "uses", "malloc"], turkish: "Dinamik bellek tahsisi malloc kullanır." },
+            { english: ["The", "heap", "stores", "dynamically", "allocated", "objects"], turkish: "Yığın dinamik olarak tahsis edilmiş nesneleri saklar." },
+            { english: ["The", "stack", "stores", "local", "function", "variables"], turkish: "Yığın yerel fonksiyon değişkenlerini saklar." },
+            { english: ["Operating", "systems", "manage", "hardware", "resources"], turkish: "İşletim sistemleri donanım kaynaklarını yönetir." },
+            { english: ["Threads", "share", "the", "same", "memory", "space"], turkish: "İş parçacıkları aynı bellek alanını paylaşır." },
+            { english: ["Deadlocks", "occur", "when", "threads", "wait", "forever"], turkish: "Kilitlenmeler iş parçacıkları sonsuza dek beklediğinde oluşur." },
+            { english: ["Encryption", "converts", "plaintext", "into", "ciphertext"], turkish: "Şifreleme düz metni şifreli metne dönüştürür." },
+            { english: ["Public", "keys", "encrypt", "private", "keys", "decrypt"], turkish: "Açık anahtarlar şifreler özel anahtarlar çözer." },
+            { english: ["TCP", "ensures", "reliable", "packet", "delivery"], turkish: "TCP güvenilir paket teslimatı sağlar." },
+            { english: ["UDP", "is", "faster", "but", "less", "reliable"], turkish: "UDP daha hızlıdır ancak daha az güvenilirdir." },
+            { english: ["DNS", "translates", "domain", "names", "to", "IPs"], turkish: "DNS alan adlarını IP adreslerine çevirir." },
+            { english: ["HTTP", "requests", "contain", "headers", "and", "body"], turkish: "HTTP istekleri üstbilgiler ve gövde içerir." },
+            { english: ["WebSockets", "allow", "real-time", "two-way", "communication"], turkish: "WebSocket'ler gerçek zamanlı çift yönlü iletişime izin verir." },
+            { english: ["GraphQL", "fetches", "exact", "data", "needed"], turkish: "GraphQL ihtiyaç duyulan tam veriyi getirir." },
+            { english: ["Caching", "reduces", "database", "load", "significantly"], turkish: "Önbelleğe alma veritabanı yükünü önemli ölçüde azaltır." },
+            { english: ["Redis", "is", "an", "in-memory", "data", "store"], turkish: "Redis bellek içi bir veri deposudur." },
+            { english: ["Docker", "images", "are", "read-only", "templates"], turkish: "Docker imajları salt okunur şablonlardır." },
+            { english: ["Kubernetes", "orchestrates", "containerized", "applications"], turkish: "Kubernetes konteynerleştirilmiş uygulamaları orkestre eder." },
+            { english: ["CI/CD", "pipelines", "automate", "testing", "and", "deployment"], turkish: "CI/CD boru hatları test ve dağıtımı otomatikleştirir." },
+            { english: ["Terraform", "manages", "infrastructure", "as", "code"], turkish: "Terraform altyapıyı kod olarak yönetir." },
+            { english: ["AWS", "offers", "cloud", "computing", "services"], turkish: "AWS bulut bilişim hizmetleri sunar." },
+            { english: ["Serverless", "architecture", "runs", "code", "on", "demand"], turkish: "Sunucusuz mimari kodu isteğe bağlı çalıştırır." },
+            { english: ["Event-driven", "systems", "react", "to", "state", "changes"], turkish: "Olay güdümlü sistemler durum değişikliklerine tepki verir." },
+            { english: ["Kafka", "processes", "real-time", "data", "streams"], turkish: "Kafka gerçek zamanlı veri akışlarını işler." },
+            { english: ["Elasticsearch", "provides", "fast", "full-text", "search"], turkish: "Elasticsearch hızlı tam metin araması sağlar." },
+            { english: ["OAuth", "enables", "secure", "third-party", "access"], turkish: "OAuth güvenli üçüncü taraf erişimi sağlar." },
+            { english: ["SSL", "certificates", "encrypt", "web", "traffic"], turkish: "SSL sertifikaları web trafiğini şifreler." },
+            { english: ["Firewalls", "block", "unauthorized", "network", "access"], turkish: "Güvenlik duvarları yetkisiz ağ erişimini engeller." },
+            { english: ["Penetration", "testing", "identifies", "system", "vulnerabilities"], turkish: "Sızma testi sistem zayıflıklarını tespit eder." },
+            { english: ["Artificial", "intelligence", "models", "learn", "from", "data"], turkish: "Yapay zeka modelleri verilerden öğrenir." },
+            { english: ["Machine", "learning", "requires", "large", "datasets"], turkish: "Makine öğrenimi büyük veri kümeleri gerektirir." },
+            { english: ["Neural", "networks", "mimic", "the", "human", "brain"], turkish: "Nöral ağlar insan beynini taklit eder." },
+            { english: ["Deep", "learning", "uses", "multiple", "hidden", "layers"], turkish: "Derin öğrenme birden fazla gizli katman kullanır." },
+            { english: ["Natural", "language", "processing", "understands", "human", "text"], turkish: "Doğal dil işleme insan metnini anlar." },
+            { english: ["Computer", "vision", "analyzes", "images", "and", "videos"], turkish: "Bilgisayarla görme görüntüleri ve videoları analiz eder." },
+            { english: ["Reinforcement", "learning", "uses", "rewards", "and", "penalties"], turkish: "Pekiştirmeli öğrenme ödül ve cezalar kullanır." },
+            { english: ["Big", "data", "requires", "distributed", "processing", "systems"], turkish: "Büyük veri dağıtık işleme sistemleri gerektirir." },
+            { english: ["Hadoop", "processes", "large", "datasets", "in", "parallel"], turkish: "Hadoop büyük veri kümelerini paralel işler." },
+            { english: ["Spark", "performs", "fast", "in-memory", "data", "processing"], turkish: "Spark hızlı bellek içi veri işleme gerçekleştirir." },
+            { english: ["Data", "pipelines", "extract", "transform", "and", "load"], turkish: "Veri boru hatları ayıklar dönüştürür ve yükler." },
+            { english: ["Data", "warehouses", "store", "historical", "business", "data"], turkish: "Veri ambarları geçmiş iş verilerini saklar." },
+            { english: ["Business", "intelligence", "tools", "visualize", "data", "metrics"], turkish: "İş zekası araçları veri metriklerini görselleştirir." },
+            { english: ["DevOps", "bridges", "development", "and", "operations", "teams"], turkish: "DevOps geliştirme ve operasyon ekiplerini birleştirir." },
+
+            // 101-150: Genel & Motivasyon
+            { english: ["I", "practice", "English", "every", "single", "day"], turkish: "Her Allah'ın günü İngilizce pratik yaparım." },
+            { english: ["Learning", "a", "new", "language", "expands", "your", "mind"], turkish: "Yeni bir dil öğrenmek zihnini genişletir." },
+            { english: ["Consistency", "is", "the", "true", "key", "to", "success"], turkish: "Süreklilik başarının gerçek anahtarıdır." },
+            { english: ["She", "always", "reads", "technical", "articles", "at", "night"], turkish: "O her zaman gece teknik makaleler okur." },
+            { english: ["We", "should", "drink", "water", "and", "stay", "focused"], turkish: "Su içmeli ve odaklanmaya devam etmeliyiz." },
+            { english: ["Technology", "changes", "our", "world", "very", "rapidly"], turkish: "Teknoloji dünyamızı çok hızlı değiştiriyor." },
+            { english: ["Patience", "and", "hard", "work", "always", "pay", "off"], turkish: "Sabır ve sıkı çalışma her zaman karşılığını verir." },
+            { english: ["Never", "stop", "learning", "new", "skills", "in", "life"], turkish: "Hayatta yeni beceriler öğrenmeyi asla bırakma." },
+            { english: ["Set", "clear", "goals", "for", "your", "future", "career"], turkish: "Gelecekteki kariyerin için net hedefler koy." },
+            { english: ["Small", "daily", "improvements", "lead", "to", "great", "results"], turkish: "Küçük günlük gelişmeler büyük sonuçlara yol açar." },
+            { english: ["Failure", "is", "just", "another", "stepping", "stone", "to", "success"], turkish: "Başarısızlık başarıya giden başka bir basamaktır." },
+            { english: ["Believe", "in", "yourself", "and", "your", "coding", "abilities"], turkish: "Kendine ve kodlama yeteneklerine inan." },
+            { english: ["Time", "management", "is", "crucial", "for", "software", "engineers"], turkish: "Zaman yönetimi yazılım mühendisleri için çok önemlidir." },
+            { english: ["Always", "ask", "questions", "when", "you", "get", "stuck"], turkish: "Tıkandığında her zaman sorular sor." },
+            { english: ["Read", "the", "documentation", "carefully", "before", "coding"], turkish: "Kodlamadan önce dokümantasyonu dikkatlice oku." },
+            { english: ["Practice", "makes", "perfect", "in", "software", "development"], turkish: "Pratik yapmak yazılım geliştirmede mükemmelleştirir." },
+            { english: ["Build", "real", "projects", "to", "showcase", "your", "skills"], turkish: "Becerilerini sergilemek için gerçek projeler inşa et." },
+            { english: ["Stay", "curious", "about", "new", "emerging", "technologies"], turkish: "Yeni gelişen teknolojiler hakkında meraklı kal." },
+            { english: ["Good", "communication", "is", "vital", "in", "remote", "teams"], turkish: "İyi iletişim uzaktan ekiplerde hayati önem taşır." },
+            { english: ["Always", "keep", "your", "software", "tools", "updated"], turkish: "Yazılım araçlarını her zaman güncel tut." },
+            { english: ["Understand", "the", "problem", "before", "writing", "any", "code"], turkish: "Kod yazmadan önce sorunu anla." },
+            { english: ["Collaborate", "with", "other", "developers", "on", "GitHub"], turkish: "GitHub'daki diğer geliştiricilerle işbirliği yap." },
+            { english: ["Take", "short", "breaks", "during", "long", "coding", "sessions"], turkish: "Uzun kodlama oturumlarında kısa molalar ver." },
+            { english: ["Write", "self-documenting", "code", "with", "meaningful", "variable", "names"], turkish: "Anlamlı değişken isimleriyle kendi kendini açıklayan kod yaz." },
+            { english: ["Learn", "how", "to", "use", "terminal", "commands", "efficiently"], turkish: "Terminal komutlarını verimli kullanmayı öğren." },
+            { english: ["Mastering", "data", "structures", "will", "make", "you", "a", "better", "programmer"], turkish: "Veri yapılarında ustalaşmak seni daha iyi bir programcı yapacaktır." },
+            { english: ["Solve", "algorithmic", "problems", "to", "sharpen", "your", "mind"], turkish: "Zihnini keskinleştirmek için algoritmik problemler çöz." },
+            { english: ["Build", "a", "strong", "portfolio", "to", "land", "your", "dream", "job"], turkish: "Hayalindeki işi kapmak için güçlü bir portföy oluştur." },
+            { english: ["Stay", "humble", "and", "always", "be", "ready", "to", "learn"], turkish: "Mütevazı kal ve her zaman öğrenmeye hazır ol." },
+            { english: ["Great", "software", "takes", "time", "effort", "and", "dedication"], turkish: "Harika yazılım zaman çaba ve özveri gerektirir." },
+            { english: ["Learn", "from", "your", "mistakes", "and", "keep", "moving", "forward"], turkish: "Hatalarından ders çıkar ve ilerlemeye devam et." },
+            { english: ["Enjoy", "the", "process", "of", "building", "software", "applications"], turkish: "Yazılım uygulamaları inşa etme sürecinin tadını çıkar." },
+            { english: ["Always", "backup", "your", "important", "files", "and", "databases"], turkish: "Önemli dosyalarını ve veritabanlarını her zaman yedekle." },
+            { english: ["Focus", "on", "solving", "problems", "rather", "than", "just", "syntax"], turkish: "Sadece sözdizimine değil sorunları çözmeye odaklan." },
+            { english: ["Automate", "repetitive", "tasks", "with", "simple", "scripts"], turkish: "Tekrarlayan görevleri basit komut dosyalarıyla otomatikleştir." },
+            { english: ["Continuous", "learning", "is", "the", "secret", "of", "successful", "engineers"], turkish: "Sürekli öğrenme başarılı mühendislerin sırrıdır." },
+            { english: ["Write", "clean", "commit", "messages", "for", "better", "history"], turkish: "Daha iyi bir geçmiş için temiz commit mesajları yaz." },
+            { english: ["Understand", "user", "needs", "before", "designing", "the", "product"], turkish: "Ürünü tasarlamadan önce kullanıcı ihtiyaçlarını anla." },
+            { english: ["Test", "your", "code", "under", "different", "edge", "cases"], turkish: "Kodunu farklı uç durumlarda test et." },
+            { english: ["Refactor", "your", "code", "to", "improve", "maintainability"], turkish: "Bakım yapılabilirliği artırmak için kodunu yeniden yapılandır." },
+            { english: ["Keep", "your", "dependencies", "up", "to", "date", "regularly"], turkish: "Bağımlılıklarını düzenli olarak güncel tut." },
+            { english: ["Learn", "keyboard", "shortcuts", "to", "speed", "up", "development"], turkish: "Geliştirmeyi hızlandırmak için klavye kısayollarını öğren." },
+            { english: ["Share", "your", "knowledge", "with", "the", "developer", "community"], turkish: "Bilgini geliştirici topluluğuyla paylaş." },
+            { english: ["Write", "clear", "documentation", "for", "your", "open-source", "projects"], turkish: "Açık kaynaklı projelerin için net dokümantasyon yaz." },
+            { english: ["Stay", "updated", "with", "the", "latest", "software", "trends"], turkish: "En son yazılım trendleriyle güncel kal." },
+            { english: ["Build", "scalable", "applications", "that", "can", "handle", "growth"], turkish: "Büyümeyi kaldırabilecek ölçeklenebilir uygulamalar inşa et." },
+            { english: ["Prioritize", "security", "in", "every", "stage", "of", "development"], turkish: "Geliştirmenin her aşamasında güvenliğe öncelik ver." },
+            { english: ["Work", "smart", "and", "hard", "to", "achieve", "your", "goals"], turkish: "Hedeflerine ulaşmak için akıllıca ve çok çalış." },
+            { english: ["Never", "be", "afraid", "to", "try", "new", "programming", "languages"], turkish: "Yeni programlama dillerini denemekten asla korkma." },
+            { english: ["You", "are", "building", "the", "future", "with", "your", "code"], turkish: "Kodlarınla geleceği inşa ediyorsun." }
+        ];
+
+        // --- AKIŞLI ÖDEV SİSTEMİ MANTIĞI ---
+        let selectedDay = parseInt(localStorage.getItem('tuana_current_day')) || 1;
+        let completedDays = JSON.parse(localStorage.getItem('tuana_completed_days')) || [];
+        
+        let isHomeworkMode = false;
+        let homeworkStep = 1;
+        
+        let activeSentenceList = [];
+        let currentSentenceSubIndex = 0;
+        let totalSentencesInStep = 10;
+        let isSentenceReviewPhase = false;
+
+        function renderHomeworkGrid() {
+            const grid = document.getElementById('days-grid');
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= 15; i++) {
+                const dayBox = document.createElement('div');
+                const isCompleted = completedDays.includes(i);
+                const isActive = i === selectedDay;
+
+                dayBox.className = `day-box ${isActive ? 'active-day' : ''} ${isCompleted ? 'completed' : ''}`;
+                dayBox.onclick = () => selectDay(i);
+
+                dayBox.innerHTML = `
+                    <div class="day-title">${i}. Gün</div>
+                    <div class="day-status">${isCompleted ? '✓ Tamamlandı' : (isActive ? '● Aktif' : 'Bekliyor')}</div>
+                `;
+                grid.appendChild(dayBox);
+            }
+            updateDayDetails();
+        }
+
+        function selectDay(dayNum) {
+            selectedDay = dayNum;
+            localStorage.setItem('tuana_current_day', dayNum);
+            renderHomeworkGrid();
+        }
+
+        function updateDayDetails() {
+            const wordsPerDay = 20;
+            const startIdx = (selectedDay - 1) * wordsPerDay;
+            const endIdx = Math.min(startIdx + wordsPerDay, allWords.length);
+            const todayCount = endIdx - startIdx;
+
+            document.getElementById('current-day-title').textContent = `${selectedDay}. Gün Akışı`;
+            document.getElementById('current-day-desc').textContent = `Ödevi Başlat butonuna bastığında sırasıyla: 20 Yeni Kelime -> Karma Kelime Tekrarı -> Karma Cümle Tekrarı + 10 Yeni Cümle gelecektir.`;
+            
+            document.getElementById('task-words-text').textContent = `1. Adım: Günün Kelime ve Terimleri (${todayCount} Kart)`;
+            document.getElementById('task-review-text').textContent = selectedDay === 1 ? 
+                `2. Adım: İlk gün (Eski tekrar yok)` : 
+                `2. Adım: Karma Unutma Önleme Kelime Seti`;
+            document.getElementById('task-sentence-text').textContent = selectedDay === 1 ?
+                `3. Adım: Cümle Kurma Pratiği (10 Yeni Cümle)` :
+                `3. Adım: 3 Eski Cümle Tekrarı + 10 Yeni Cümle Pratiği`;
+        }
+
+        function startDayHomework() {
+            isHomeworkMode = true;
+            homeworkStep = 1;
+            
+            const wordsPerDay = 20;
+            const startIdx = (selectedDay - 1) * wordsPerDay;
+            const endIdx = Math.min(startIdx + wordsPerDay, allWords.length);
+            
+            activeWordsList = allWords.slice(startIdx, endIdx);
+            currentCardIndex = 0;
+
+            document.getElementById('homework-card-banner').style.display = 'flex';
+            document.getElementById('banner-text').textContent = `${selectedDay}. Gün: Yeni Kelimeler & Terimler`;
+            document.getElementById('banner-step-count').textContent = `Aşama 1 / 3`;
+            document.getElementById('cards-filter-bar').style.display = 'none';
+
+            switchTab('cards');
+            updateCard();
+        }
+
+        function proceedHomeworkFlow() {
+            if (!isHomeworkMode) return;
+
+            if (homeworkStep === 1) {
+                if (selectedDay > 1) {
+                    homeworkStep = 2;
+                    const startIdx = (selectedDay - 1) * 20;
+                    const previousWords = allWords.slice(0, startIdx);
+                    const reviewCount = Math.min(12, previousWords.length);
+                    activeWordsList = [...previousWords].sort(() => Math.random() - 0.5).slice(0, reviewCount);
+                    
+                    currentCardIndex = 0;
+                    document.getElementById('banner-text').textContent = `Eski Kelimelerden Unutma Önleme Seti`;
+                    document.getElementById('banner-step-count').textContent = `Aşama 2 / 3`;
+                    updateCard();
+                } else {
+                    startHomeworkSentenceStep();
+                }
+            } else if (homeworkStep === 2) {
+                startHomeworkSentenceStep();
+            }
+        }
+
+        function startHomeworkSentenceStep() {
+            homeworkStep = 3;
+            
+            const sentenceStart = (selectedDay - 1) * 10;
+            const newTodaySentences = sentences.slice(sentenceStart, sentenceStart + 10);
+
+            if (selectedDay > 1) {
+                const prevSentences = sentences.slice(0, sentenceStart);
+                const reviewSentences = [...prevSentences].sort(() => Math.random() - 0.5).slice(0, 3);
+                
+                activeSentenceList = reviewSentences;
+                isSentenceReviewPhase = true;
+                totalSentencesInStep = reviewSentences.length;
+                currentSentenceSubIndex = 0;
+
+                document.getElementById('builder-banner-title').textContent = `Eski Cümleleri Unutma Önleme Tekrarı`;
+            } else {
+                activeSentenceList = newTodaySentences;
+                isSentenceReviewPhase = false;
+                totalSentencesInStep = newTodaySentences.length;
+                currentSentenceSubIndex = 0;
+
+                document.getElementById('builder-banner-title').textContent = `Günün Yeni Cümleleri`;
+            }
+
+            document.getElementById('homework-card-banner').style.display = 'none';
+            document.getElementById('homework-builder-banner').style.display = 'flex';
+            document.getElementById('sentence-step-indicator').textContent = `1 / ${totalSentencesInStep}`;
+            
+            switchTab('builder');
+            loadSentenceBuilderForHomework();
+        }
+
+        function loadSentenceBuilderForHomework() {
+            const s = activeSentenceList[currentSentenceSubIndex];
+            document.getElementById('builder-meaning').textContent = `Türkçesi: "${s.turkish}"`;
+            document.getElementById('builder-feedback').textContent = '';
+            document.getElementById('answer-box').style.display = 'none';
+            
+            const pool = document.getElementById('word-pool');
+            const zone = document.getElementById('sentence-zone');
+            pool.innerHTML = '';
+            zone.innerHTML = '';
+
+            let shuffled = [...s.english].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((word) => {
+                const wordEl = document.createElement('div');
+                wordEl.className = 'draggable-word';
+                wordEl.textContent = word;
+                wordEl.onclick = () => moveWord(wordEl, pool, zone);
+                pool.appendChild(wordEl);
+            });
+        }
+
+        function completeHomework() {
+            isHomeworkMode = false;
+            document.getElementById('homework-builder-banner').style.display = 'none';
+            document.getElementById('cards-filter-bar').style.display = 'flex';
+
+            if (!completedDays.includes(selectedDay)) {
+                completedDays.push(selectedDay);
+                localStorage.setItem('tuana_completed_days', JSON.stringify(completedDays));
+            }
+
+            alert(`🎉 Tebrikler! ${selectedDay}. Günün tüm kelime ve cümle aşamalarını başarıyla tamamladın!`);
+            switchTab('homework');
+        }
+
+        // --- FLASHCARD İŞLEMLERİ ---
+        let activeWordsList = [...allWords];
+        let currentCardIndex = 0;
+
+        function filterWords() {
+            const query = document.getElementById('search-box').value.toLowerCase();
+            const level = document.getElementById('level-filter').value;
+
+            activeWordsList = allWords.filter(w => {
+                const matchesQuery = w.word.toLowerCase().includes(query) || w.meaning.toLowerCase().includes(query);
+                const matchesLevel = level === 'all' || w.level === level;
+                return matchesQuery && matchesLevel;
+            });
+
+            currentCardIndex = 0;
+            if(activeWordsList.length > 0) {
+                updateCard();
+            } else {
+                document.getElementById('card-word').textContent = "Bulunamadı";
+                document.getElementById('card-phonetic').textContent = "";
+                document.getElementById('card-meaning').textContent = "Sonuç yok";
+                document.getElementById('card-example').textContent = "";
+                document.getElementById('card-indicator').textContent = "0 / 0";
+            }
+        }
+
+        function updateCard() {
+            const card = activeWordsList[currentCardIndex];
+            document.getElementById('card-word').textContent = card.word;
+            document.getElementById('card-phonetic').textContent = card.phonetic;
+            document.getElementById('card-meaning').textContent = card.meaning;
+            document.getElementById('card-example').textContent = `"${card.example}"`;
+            document.getElementById('card-indicator').textContent = `${currentCardIndex + 1} / ${activeWordsList.length}`;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if(activeWordsList.length === 0) return;
+            
+            if (isHomeworkMode && currentCardIndex === activeWordsList.length - 1) {
+                proceedHomeworkFlow();
+                return;
+            }
+
+            currentCardIndex = (currentCardIndex + 1) % activeWordsList.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            if(activeWordsList.length === 0) return;
+            currentCardIndex = (currentCardIndex - 1 + activeWordsList.length) % activeWordsList.length;
+            updateCard();
+        }
+
+        function speakCurrentWord(event) {
+            event.stopPropagation();
+            if(activeWordsList.length === 0) return;
+            const text = activeWordsList[currentCardIndex].word;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- QUIZ İŞLEMLERİ ---
+        let quizScore = 0;
+
+        function loadQuiz() {
+            const q = allWords[Math.floor(Math.random() * allWords.length)];
+            document.getElementById('quiz-question').textContent = `"${q.word}" kelimesinin/teriminin Türkçe karşılığı nedir?`;
+            const optionsGrid = document.getElementById('quiz-options');
+            optionsGrid.innerHTML = '';
+            document.getElementById('next-quiz-btn').style.display = 'none';
+
+            let options = [q.meaning];
+            while (options.length < 4) {
+                let randomMeaning = allWords[Math.floor(Math.random() * allWords.length)].meaning;
+                if (!options.includes(randomMeaning)) options.push(randomMeaning);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkQuizAnswer(btn, opt, q.meaning);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(btn, selected, correct) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                quizScore += 10;
+                document.getElementById('quiz-score').textContent = quizScore;
+            } else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => {
+                    if (b.textContent === correct) b.classList.add('correct');
+                });
+            }
+            document.getElementById('next-quiz-btn').style.display = 'inline-block';
+        }
+
+        function nextQuizQuestion() {
+            loadQuiz();
+        }
+
+        // --- CÜMLE KURMA İŞLEMLERİ ---
+        let currentSentenceIndex = 0;
+
+        function loadSentenceBuilder() {
+            const s = sentences[currentSentenceIndex];
+            document.getElementById('builder-meaning').textContent = `Türkçesi: "${s.turkish}"`;
+            document.getElementById('builder-feedback').textContent = '';
+            document.getElementById('answer-box').style.display = 'none';
+            
+            const pool = document.getElementById('word-pool');
+            const zone = document.getElementById('sentence-zone');
+            pool.innerHTML = '';
+            zone.innerHTML = '';
+
+            let shuffled = [...s.english].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((word) => {
+                const wordEl = document.createElement('div');
+                wordEl.className = 'draggable-word';
+                wordEl.textContent = word;
+                wordEl.onclick = () => moveWord(wordEl, pool, zone);
+                pool.appendChild(wordEl);
+            });
+        }
+
+        function moveWord(el, pool, zone) {
+            if (el.parentElement === pool) {
+                zone.appendChild(el);
+            } else {
+                pool.appendChild(el);
+            }
+        }
+
+        function resetSentence() {
+            if (isHomeworkMode) {
+                loadSentenceBuilderForHomework();
+            } else {
+                loadSentenceBuilder();
+            }
+        }
+
+        function showAnswer() {
+            const s = isHomeworkMode ? activeSentenceList[currentSentenceSubIndex] : sentences[currentSentenceIndex];
+            const answerBox = document.getElementById('answer-box');
+            document.getElementById('correct-answer-text').textContent = s.english.join(" ");
+            answerBox.style.display = 'block';
+        }
+
+        function checkSentence() {
+            const zoneWords = Array.from(document.getElementById('sentence-zone').children)
+                                   .map(el => el.textContent);
+            const correctSentence = isHomeworkMode ? 
+                activeSentenceList[currentSentenceSubIndex].english : 
+                sentences[currentSentenceIndex].english;
+
+            const feedback = document.getElementById('builder-feedback');
+            if (JSON.stringify(zoneWords) === JSON.stringify(correctSentence)) {
+                feedback.style.color = '#10b981';
+                feedback.textContent = '🎉 Tebrikler! Harika ve doğru sıralama.';
+            } else {
+                feedback.style.color = '#ef4444';
+                feedback.textContent = '❌ Hatalı sıralama. Tekrar deneyin veya cevabı göster butonuna tıklayın.';
+            }
+        }
+
+        function nextSentence() {
+            if (isHomeworkMode) {
+                currentSentenceSubIndex++;
+
+                if (currentSentenceSubIndex >= totalSentencesInStep) {
+                    if (isSentenceReviewPhase) {
+                        isSentenceReviewPhase = false;
+                        const sentenceStart = (selectedDay - 1) * 10;
+                        activeSentenceList = sentences.slice(sentenceStart, sentenceStart + 10);
+                        currentSentenceSubIndex = 0;
+                        totalSentencesInStep = activeSentenceList.length;
+
+                        document.getElementById('builder-banner-title').textContent = `Günün Yeni Cümleleri`;
+                        document.getElementById('sentence-step-indicator').textContent = `1 / ${totalSentencesInStep}`;
+                        loadSentenceBuilderForHomework();
+                        return;
+                    } else {
+                        completeHomework();
+                        return;
+                    }
+                }
+
+                document.getElementById('sentence-step-indicator').textContent = `${currentSentenceSubIndex + 1} / ${totalSentencesInStep}`;
+                loadSentenceBuilderForHomework();
+            } else {
+                currentSentenceIndex = (currentSentenceIndex + 1) % sentences.length;
+                loadSentenceBuilder();
+            }
+        }
+
+        // --- SEKME YÖNETİMİ ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+            if(activeBtn) activeBtn.classList.add('active');
+
+            if(tabId === 'quiz') loadQuiz();
+            if(tabId === 'builder' && !isHomeworkMode) loadSentenceBuilder();
+            if(tabId === 'homework') renderHomeworkGrid();
+        }
+
+        // --- YAPAY ZEKA (AI) ENTEGRASYON MANTIĞI ---
+
+        async function fetchAIResponse(promptText, systemInstructionText) {
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: promptText,
+                        systemInstruction: systemInstructionText
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    return data.reply;
+                } else {
+                    return `Hata: ${data.error || 'İstek işlenemedi.'}`;
+                }
+            } catch (err) {
+                return "Sunucuya bağlanırken bir hata oluştu.";
+            }
+        }
+
+        // AI Chat Alanına Mesaj Ekleme
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('chat-messages');
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${sender}`;
+            bubble.textContent = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // AI Chat Mesajı Gönderme
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            appendChatMessage(userMsg, 'user');
+            input.value = '';
+
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'chat-bubble ai';
+            loadingBubble.textContent = 'Düşünüyorum...';
+            document.getElementById('chat-messages').appendChild(loadingBubble);
+
+            const reply = await fetchAIResponse(userMsg);
+            loadingBubble.textContent = reply;
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Kelime Kartından Doğrudan AI Öğretmene Sor
+        async function askAIAboutCurrentWord(event) {
+            event.stopPropagation();
+            if (activeWordsList.length === 0) return;
+
+            const card = activeWordsList[currentCardIndex];
+            const prompt = `"${card.word}" kelimesinin/terimininyazılım dilindeki kullanımını, eş anlamlılarını ve 2 farklı İngilizce örnek cümlesini Türkçe olarak kısa ve net açıkla.`;
+
+            switchTab('ai-hub');
+            appendChatMessage(`"${card.word}" kelimesi hakkında detaylı bilgi verebilir misin?`, 'user');
+            
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'chat-bubble ai';
+            loadingBubble.textContent = 'Yazılım ve dil uzmanı düşünüyor...';
+            document.getElementById('chat-messages').appendChild(loadingBubble);
+
+            const reply = await fetchAIResponse(prompt, "Sen kıdemli bir yazılım mühendisi ve İngilizce öğretmenisin. Öğrenciye teknik terimleri ve kelimeleri kısa, akıcı ve teşvik edici bir dille anlat.");
+            loadingBubble.textContent = reply;
+        }
+
+        // Cümle Modülünden AI Gramer Analizi
+        async function explainSentenceWithAI() {
+            const s = isHomeworkMode ? activeSentenceList[currentSentenceSubIndex] : sentences[currentSentenceIndex];
+            const fullSentence = s.english.join(" ");
+            const prompt = `Şu İngilizce cümlenin gramer yapısını, zamanını (tense) ve kelimelerin işlevini kısa maddeler halinde Türkçe olarak açıkla: "${fullSentence}" (Türkçesi: ${s.turkish})`;
+
+            switchTab('ai-hub');
+            appendChatMessage(`"${fullSentence}" cümlenizin gramer analizini yapabilir misin?`, 'user');
+
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'chat-bubble ai';
+            loadingBubble.textContent = 'Gramer analizi yapılıyor...';
+            document.getElementById('chat-messages').appendChild(loadingBubble);
+
+            const reply = await fetchAIResponse(prompt, "Sen bir İngilizce Dilbilgisi uzmanısın. Cümle yapılarını net ve anlaşılır biçimde analiz edersin.");
+            loadingBubble.textContent = reply;
+        }
+
+        // Başlangıç
+        renderHomeworkGrid();
+        updateCard();
+    </script>
+</body>
+</html>
