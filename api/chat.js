@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Model adı güncel Gemini Flash modeline ayarlandı
+        // Endpoint adresi 'models/gemini-1.5-flash' şeklinde tam path olarak güncellendi
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
