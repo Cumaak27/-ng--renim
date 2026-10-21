@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
                 {
                     method: "POST",
                     headers: {
